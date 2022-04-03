@@ -25,6 +25,7 @@ func FlatMap[T, V any](elms []T, fn func(T) []V) []V {
 }
 
 func MapE[T, V any](elms []T, fn func(T) (V, error)) ([]V, error) {
+
 	outputs := make([]V, len(elms), cap(elms))
 	for i, elm := range elms {
 		o, err := fn(elm)
