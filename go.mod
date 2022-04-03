@@ -1,4 +1,4 @@
-module github.com/kohei789/go-collections
+module github.com/koh789/go-collections
 
 go 1.18
 
