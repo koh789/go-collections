@@ -1,9 +1,17 @@
-package gol
+package col
 
 func Map[T, V any](elms []T, fn func(T) V) []V {
 	outputs := make([]V, len(elms), cap(elms))
 	for i, elm := range elms {
 		outputs[i] = fn(elm)
+	}
+	return outputs
+}
+
+func MapWithIndex[T, V any](elms []T, fn func(int, T) V) []V {
+	outputs := make([]V, len(elms), cap(elms))
+	for i, elm := range elms {
+		outputs[i] = fn(i, elm)
 	}
 	return outputs
 }
@@ -76,6 +84,19 @@ func GroupByUniq[T any, V comparable](elms []T, fn func(T) V) map[V]T {
 			continue
 		}
 		outputs[key] = elm
+	}
+	return outputs
+}
+
+func GroupBy[T any, V comparable](elms []T, fn func(T) V) map[V][]T {
+	outputs := make(map[V][]T, 0)
+	for _, elm := range elms {
+		key := fn(elm)
+		if values, ok := outputs[key]; ok {
+			outputs[key] = append(values, elm)
+			continue
+		}
+		outputs[key] = []T{elm}
 	}
 	return outputs
 }

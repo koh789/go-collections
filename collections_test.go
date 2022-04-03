@@ -1,4 +1,4 @@
-package gol
+package col
 
 import (
 	"errors"
@@ -278,6 +278,67 @@ func TestGroupByUniq(t *testing.T) {
 	} {
 		t.Run(table.title, func(t *testing.T) {
 			actual := GroupByUniq(table.inputs, func(u user) int { return u.ID })
+			assert.Equal(t, table.expect, actual)
+		})
+	}
+}
+
+func TestGroupBy(t *testing.T) {
+	type user struct {
+		ID      int
+		Country string
+		Name    string
+	}
+	fn := func(u user) string { return u.Country }
+
+	for _, table := range []struct {
+		title  string
+		inputs []user
+		expect map[string][]user
+	}{
+		{
+			title:  "empty as an argument, empty is returned",
+			inputs: []user{},
+			expect: map[string][]user{},
+		},
+		{
+			title:  "nil as an argument, empty is returned",
+			inputs: nil,
+			expect: map[string][]user{},
+		},
+		{
+			title: "if there are multiple values for a key, a map with multiple elements as values is returned",
+			inputs: []user{
+				{ID: 1, Country: "JP", Name: "one"},
+				{ID: 3, Country: "JP", Name: "three"},
+				{ID: 10, Country: "US", Name: "ten"},
+				{ID: 50, Country: "JP", Name: "fifty"},
+			},
+			expect: map[string][]user{
+				"JP": {
+					{ID: 1, Country: "JP", Name: "one"},
+					{ID: 3, Country: "JP", Name: "three"},
+					{ID: 50, Country: "JP", Name: "fifty"},
+				},
+				"US": {
+					{ID: 10, Country: "US", Name: "ten"},
+				},
+			},
+		},
+		{
+			title: "if the value for a key is singular, a map with a single element (slice) as value is returned",
+			inputs: []user{
+				{ID: 1, Country: "JP", Name: "one"},
+				{ID: 10, Country: "US", Name: "ten"},
+			},
+			expect: map[string][]user{
+				"JP": {{ID: 1, Country: "JP", Name: "one"}},
+				"US": {{ID: 10, Country: "US", Name: "ten"}},
+			},
+		},
+	} {
+		t.Run(table.title, func(t *testing.T) {
+			actual := GroupBy(table.inputs, fn)
 			assert.Equal(t, table.expect, actual)
 		})
 	}
