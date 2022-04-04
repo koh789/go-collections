@@ -1,5 +1,8 @@
 # go-collections
 
+[![BuildStatus](https://github.com/koh789/go-collections/actions/workflows/test.yml/badge.svg)](https://github.com/koh789/go-collections/actions/workflows/test.yml)
+
+
 functional library for slice
 
 ## Install
